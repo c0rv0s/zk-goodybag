@@ -18,6 +18,11 @@ contract ZKVerifier {
         bytes32 username,
         uint256 groupId
     );
+    event GroupCreated(
+        uint256 groupId,
+        uint256 lensPubId,
+        uint256 lensProfileId
+    );
 
     ISemaphore public semaphore;
     IGoodyBag public goodyBag;
@@ -30,13 +35,20 @@ contract ZKVerifier {
         goodyBag = IGoodyBag(goodyBagAddress);
     }
 
-    function createGroup(uint256 groupId, string calldata _uri) external {
+    function createGroup(
+        uint256 groupId,
+        string calldata _uri,
+        uint256 lensPubId,
+        uint256 lensProfileId
+    ) external {
         require(!groupIds[groupId], "group already exists");
 
         groupIds[groupId] = true;
         semaphore.createGroup(groupId, 20, 0, address(this));
 
         goodyBag.createCollection(groupId, _uri);
+
+        emit GroupCreated(groupId, lensPubId, lensProfileId);
     }
 
     function joinGroup(
