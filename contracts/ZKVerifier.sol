@@ -67,17 +67,17 @@ contract ZKVerifier {
     function claim(
         uint256 groupId,
         address recipient,
+        bytes32 signal,
         uint256 merkleTreeRoot,
         uint256 nullifierHash,
         uint256[8] calldata proof
     ) external {
         require(groupIds[groupId], "group doesn't exist");
 
-        bytes32 b = bytes32(uint256(uint160(recipient)));
         semaphore.verifyProof(
             groupId,
             merkleTreeRoot,
-            b,
+            signal,
             nullifierHash,
             groupId,
             proof
