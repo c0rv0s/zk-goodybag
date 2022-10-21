@@ -1,4 +1,5 @@
 const { task, types } = require("hardhat/config");
+const fs = require("fs");
 
 task("deploy", "Deploy a Greeter contract")
   .addOptionalParam(
@@ -46,6 +47,26 @@ task("deploy", "Deploy a Greeter contract")
         `bag deployed ${bag.address} verifier deployed ${verifier.address}`
       );
     }
+
+    // save addresses
+    const network = await hre.ethers.provider.getNetwork();
+    if (!fs.existsSync("deployments")) {
+      fs.mkdirSync("deployments");
+    }
+
+    fs.writeFileSync(
+      `deployments/deployment_${network.chainId}.json`,
+      {
+        semaphoreAddress,
+        bagAddress: bag.address,
+        verifierAddress: verifier.address,
+      },
+      (err) => {
+        if (err) {
+          throw err;
+        }
+      }
+    );
 
     return true;
   });

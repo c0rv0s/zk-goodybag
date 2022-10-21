@@ -33,4 +33,14 @@ module.exports = {
       accounts: [config.PRIVATE_KEY],
     },
   },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: "24J65UXD6STS4UE5K9X3EPNFWEX7ZCWD8P" // config.polyscan for polygon/mumbai
+  },
+  gasReporter: {
+    currency: "USD",
+    gasPrice: 15,
+    enabled: false,
+  },
 };

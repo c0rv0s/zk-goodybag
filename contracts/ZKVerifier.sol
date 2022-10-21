@@ -2,6 +2,7 @@
 pragma solidity ^0.8.4;
 
 import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IGoodyBag {
     function createCollection(uint256 groupId, string memory _uri)
@@ -11,7 +12,7 @@ interface IGoodyBag {
     function mint(address account, uint256 collectionId) external;
 }
 
-contract ZKVerifier {
+contract ZKVerifier is Ownable {
     event Claim(uint256 groupId);
     event NewUser(
         uint256 identityCommitment,
@@ -40,7 +41,7 @@ contract ZKVerifier {
         string calldata _uri,
         uint256 lensPubId,
         uint256 lensProfileId
-    ) external {
+    ) external onlyOwner {
         require(!groupIds[groupId], "group already exists");
 
         groupIds[groupId] = true;
@@ -55,7 +56,7 @@ contract ZKVerifier {
         uint256 identityCommitment,
         bytes32 username,
         uint256 groupId
-    ) external {
+    ) external onlyOwner {
         require(groupIds[groupId], "group doesn't exist");
         semaphore.addMember(groupId, identityCommitment);
 
