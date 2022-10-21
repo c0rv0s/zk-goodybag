@@ -49,6 +49,11 @@ task("deploy", "Deploy a Greeter contract")
     }
 
     // save addresses
+    const data = JSON.stringify({
+      semaphoreAddress,
+      bagAddress: bag.address,
+      verifierAddress: verifier.address,
+    });
     const network = await hre.ethers.provider.getNetwork();
     if (!fs.existsSync("deployments")) {
       fs.mkdirSync("deployments");
@@ -56,11 +61,7 @@ task("deploy", "Deploy a Greeter contract")
 
     fs.writeFileSync(
       `deployments/deployment_${network.chainId}.json`,
-      {
-        semaphoreAddress,
-        bagAddress: bag.address,
-        verifierAddress: verifier.address,
-      },
+      data,
       (err) => {
         if (err) {
           throw err;
