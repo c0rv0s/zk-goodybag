@@ -1,5 +1,3 @@
-const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
-
 const { Identity } = require("@semaphore-protocol/identity");
 const { Group } = require("@semaphore-protocol/group");
 const {
@@ -125,9 +123,9 @@ describe("claim goody bag", function () {
     }
   });
 
-  it.only("multiple groups, claims", async () => {
+  it("multiple groups, claims", async () => {
     for (let i = 1; i < groupIds.length; i++) {
-      console.log(i)
+      console.log(i);
       // create group
       await verifier.createGroup(groupIds[i], "uri", 0, 0);
 
@@ -154,7 +152,7 @@ describe("claim goody bag", function () {
           }
         );
         const solidityProof = packToSolidityProof(fullProof.proof);
-  
+
         await verifier.claim(
           groupIds[i],
           accounts[j].address,
@@ -165,5 +163,44 @@ describe("claim goody bag", function () {
         );
       }
     }
-  })
+  });
+
+  it.skip("offchain group", async () => {
+    // create new group
+    const tx = await verifier.createGroup(groupIds[1], "uri", 0, 0);
+    await expect(tx).to.emit(verifier, "GroupCreated");
+    expect(await verifier.groupIds(groupIds[1])).to.equal(true);
+
+    // off chain membership
+    const offChainGroup = new Group(20);
+    offChainGroup.addMember(users[0].identity.generateCommitment());
+    offChainGroup.addMember(users[1].identity.generateCommitment());
+
+    // verify
+    const signal = ethers.utils.formatBytes32String("ClubSpace");
+    const fullProof = await generateProof(
+      users[0].identity,
+      offChainGroup,
+      groupIds[1],
+      signal,
+      {
+        wasmFilePath,
+        zkeyFilePath,
+      }
+    );
+    const solidityProof = packToSolidityProof(fullProof.proof);
+
+    const transaction = verifier.claim(
+      groupIds[1],
+      accounts[0].address,
+      signal,
+      fullProof.publicSignals.merkleRoot,
+      fullProof.publicSignals.nullifierHash,
+      solidityProof
+    );
+
+    await expect(transaction)
+        .to.emit(verifier, "Claim")
+        .withArgs(groupIds[1]);
+  });
 });

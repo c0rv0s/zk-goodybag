@@ -1,7 +1,7 @@
 const { task, types } = require("hardhat/config");
 const fs = require("fs");
 
-task("deploy", "Deploy a Greeter contract")
+task("deploy", "Deploy a Goody Bag contract")
   .addOptionalParam(
     "semaphore",
     "Semaphore contract address",
@@ -49,11 +49,15 @@ task("deploy", "Deploy a Greeter contract")
     }
 
     // save addresses
-    const data = JSON.stringify({
-      semaphoreAddress,
-      bagAddress: bag.address,
-      verifierAddress: verifier.address,
-    });
+    const data = JSON.stringify(
+      {
+        semaphoreAddress,
+        bagAddress: bag.address,
+        verifierAddress: verifier.address,
+      },
+      undefined,
+      2
+    );
     const network = await hre.ethers.provider.getNetwork();
     if (!fs.existsSync("deployments")) {
       fs.mkdirSync("deployments");

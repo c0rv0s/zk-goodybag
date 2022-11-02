@@ -13,11 +13,11 @@ interface IGoodyBag {
 }
 
 contract ZKVerifier is Ownable {
-    event Claim(uint256 groupId);
+    event Claim(address recipient, uint256 groupId);
     event NewUser(
         uint256 identityCommitment,
         bytes32 username,
-        uint256 groupId
+        uint256 indexed groupId
     );
     event GroupCreated(
         uint256 groupId,
@@ -86,6 +86,6 @@ contract ZKVerifier is Ownable {
 
         goodyBag.mint(recipient, groupId);
 
-        emit Claim(groupId);
+        emit Claim(recipient, groupId);
     }
 }
