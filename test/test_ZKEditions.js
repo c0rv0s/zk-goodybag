@@ -124,7 +124,6 @@ describe("claim zk editions", function () {
 
   it("multiple groups, claims", async () => {
     for (let i = 1; i < groupIds.length; i++) {
-      console.log(i);
       // create group
       await verifier.createGroup(groupIds[i], editions.address, 0, 0);
 
@@ -162,46 +161,5 @@ describe("claim zk editions", function () {
         );
       }
     }
-  });
-
-  it.skip("offchain group", async () => {
-    // create new group
-    const tx = await verifier.createGroup(groupIds[1], editions.address, 0, 0);
-    await expect(tx).to.emit(verifier, "GroupCreated");
-    expect(await verifier.groupIdCollections(groupIds[1])).to.equal(
-      editions.address
-    );
-
-    // off chain membership
-    const offChainGroup = new Group(20);
-    offChainGroup.addMember(users[0].identity.generateCommitment());
-    offChainGroup.addMember(users[1].identity.generateCommitment());
-
-    // verify
-    const signal = ethers.utils.formatBytes32String("ClubSpace");
-    const fullProof = await generateProof(
-      users[0].identity,
-      offChainGroup,
-      groupIds[1],
-      signal,
-      {
-        wasmFilePath,
-        zkeyFilePath,
-      }
-    );
-    const solidityProof = packToSolidityProof(fullProof.proof);
-
-    const transaction = verifier.claim(
-      groupIds[1],
-      accounts[0].address,
-      signal,
-      fullProof.publicSignals.merkleRoot,
-      fullProof.publicSignals.nullifierHash,
-      solidityProof
-    );
-
-    await expect(transaction)
-      .to.emit(verifier, "Claim")
-      .withArgs(accounts[i].address, groupIds[1]);
   });
 });

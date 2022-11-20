@@ -119,13 +119,12 @@ describe("claim goody bag", function () {
 
       await expect(transaction)
         .to.emit(verifier, "Claim")
-        .withArgs(groupIds[0]);
+        .withArgs(accounts[i].address, groupIds[0]);
     }
   });
 
   it("multiple groups, claims", async () => {
     for (let i = 1; i < groupIds.length; i++) {
-      console.log(i);
       // create group
       await verifier.createGroup(groupIds[i], "uri", 0, 0);
 
@@ -200,7 +199,7 @@ describe("claim goody bag", function () {
     );
 
     await expect(transaction)
-        .to.emit(verifier, "Claim")
-        .withArgs(groupIds[1]);
+      .to.emit(verifier, "Claim")
+      .withArgs(accounts[i].address, groupIds[1]);
   });
 });
