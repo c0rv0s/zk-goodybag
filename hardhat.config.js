@@ -4,6 +4,7 @@ require("hardhat-abi-exporter");
 require("hardhat-gas-reporter");
 require("@semaphore-protocol/hardhat");
 require("./tasks/deploy"); // Your deploy task.
+require("./tasks/deploy_editions"); 
 
 const config = require("./config.json");
 
