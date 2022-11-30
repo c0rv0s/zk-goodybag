@@ -33,6 +33,10 @@ module.exports = {
       url: config.ALCHEMY_MUMBAI_URL,
       accounts: [config.PRIVATE_KEY],
     },
+    polygon: {
+      url: config.ALCHEMY_POLYGON_URL,
+      accounts: [config.PRIVATE_KEY],
+    },
   },
   etherscan: {
     // Your API key for Etherscan
